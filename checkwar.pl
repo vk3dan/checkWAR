@@ -10,7 +10,7 @@ use warnings;
 my $count = 0;
 my $nickfile = "./nicks.csv";
 
-print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134\n\n";
+print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
 
 unless (@ARGV)
 {
