@@ -1,6 +1,7 @@
 #! /usr/bin/perl
 # Worked all redditors progress check utility by VK3DAN
-# Thanks to molo1134 for borrowed code snippets.
+# Thanks to molo1134 for borrowed code snippets
+# and arodland N2EON for code style and cleanup help
 #
 
 use strict;
@@ -76,7 +77,7 @@ while (my $line = <$adif>)	# process ADIF data in array
 }
 
 close($adif);
-print "\nTotal of $count contacts with known redditor amateurs\n\n";
+print "\nTotal of $count QSOs with known redditor amateurs\n\n";
 
 sub csvstuff
 {
