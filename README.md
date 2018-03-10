@@ -24,7 +24,7 @@ log.adi found -- redditor list found
 2    K1NZ          /u/nickenzi              30M     JT65    20171211
 3    K1NZ          /u/nickenzi              30M     FT8     20171127
 
-Total of 3 contacts with known redditor amateurs
+Total of 3 QSOs with known redditor amateurs
 ```
 
 Further update will be made as needed within my capabilities.
