@@ -14,7 +14,7 @@ print "\nUtility for checking Worked All Redditors progress from an ADIF logbook
 
 unless (@ARGV)
 {
-    die "No adi file specified or incorrect usage\nusage: checkwar <adifile.adi>\n\n";  #show usage if called without args
+    die "No ADIF file specified or incorrect usage\nusage: checkwar <adifile.adi>\n\n";  #show usage if called without args
 }
 
 my $adifFileName = shift @ARGV;
