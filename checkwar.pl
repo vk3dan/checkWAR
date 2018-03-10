@@ -3,7 +3,7 @@
 # Thanks to molo1134 for borrowed code snippets.
 #
 
-#use strict;
+use strict;
 
 my $count = 0;
 my $call = "";
