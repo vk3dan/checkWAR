@@ -1,7 +1,7 @@
 # checkWAR
 Perl utility to take an ADIF format logbook and spit out only the contacts with known reddit amateurs.
 Written by VK3DAN, with thanks to molo1134 for some code and maintaining the csv file etc,
-and thanks to N2EON for code style tips and cleanup help.
+and thanks to arodland for code style tips and cleanup help.
 
 usage: ./checkwar.pl <adifile.adi>
 
