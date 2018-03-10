@@ -4,7 +4,6 @@
 #
 
 #use strict;
-use Term::ANSIColor;
 
 my $count = 0;
 my $call = "";
