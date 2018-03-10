@@ -44,7 +44,7 @@ my ($call, $mode, $date, $band);
 
 while (my $line = <$adif>)	# process ADIF data in array
 {
-    if($line =~ /<CALL:\d+>([^<\s]*)/i)
+    if($line =~ /<CALL:\d+>([^<]*)/i)
     {  
         $call=$1;
         $call=~s/\s+$//;
