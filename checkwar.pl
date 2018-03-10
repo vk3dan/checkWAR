@@ -7,23 +7,18 @@ use strict;
 use warnings;
 
 my $count = 0;
-my $call = "";
-my $band = "";
-my $mode = "";
-my $date = "";
-my $line = "";
 my $nickfile = "./nicks.csv";
 
 print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134\n\n";
 
-if ($#ARGV == -1)
+unless (@ARGV)
 {
     die "No adi file specified or incorrect usage\nusage: checkwar <adifile.adi>\n\n";  #show usage if called without args
 }
 
-my $adifFileName = "$ARGV[0]";
+my $adifFileName = shift @ARGV;
 
-open(my $adif, $adifFileName) or die "$! -- File $ARGV[0] doesn't exist or unreadable\n\n"; #open file or show error and die
+open(my $adif, $adifFileName) or die "$! -- File $adifFileName doesn't exist or unreadable\n\n"; #open file or show error and die
 print "$adifFileName found -- ";
 
 if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks old prompt to download new copy
@@ -45,9 +40,11 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
 
 printf("\n%-5s%-14s%-25s%-8s%-8s%-10s\n\n","#","Callsign","Reddit username","Band","Mode","Date"); 
 
+my ($call, $mode, $date, $band);
+
 while (my $line = <$adif>)	# process ADIF data in array
 {
-    if($line =~ /<CALL:\d+>([^<]*)/i)
+    if($line =~ /<CALL:\d+>([^<\s]*)/i)
     {  
         $call=$1;
         $call=~s/\s+$//;
