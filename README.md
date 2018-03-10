@@ -14,7 +14,7 @@ Example run:
 $ ./checkwar.pl log.adi
 
 Utility for checking Worked All Redditors progress from an ADIF logbook
-by VK3DAN with thanks to molo1134
+by VK3DAN with thanks to molo1134 and arodland
 
 log.adi found -- redditor list found
 
