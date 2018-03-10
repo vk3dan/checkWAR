@@ -45,9 +45,6 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
 
 printf("\n%-5s%-14s%-25s%-8s%-8s%-10s\n\n","#","Callsign","Reddit username","Band","Mode","Date"); 
 
-#my @lines = <ADIF>;	# read ADIF data into array
-#close(ADIF);		# close ADIF file
-
 while (my $line = <$adif>)	# process ADIF data in array
 {
     if($line =~ /<CALL:\d+>([^<]*)/i)
@@ -81,6 +78,7 @@ while (my $line = <$adif>)	# process ADIF data in array
     }
 }
 
+close(adif);
 print "\nTotal of $count contacts with known redditor amateurs\n\n";
 
 sub csvstuff
