@@ -9,9 +9,9 @@ If nicks.csv is not present the utility will download it directly from molo1134'
 If nicks.csv is more than 28 days old the utility will ask if you wish to download a new version.
 
 Example run:
+```
 $ ./checkwar.pl log.adi
 
-```
 Utility for checking Worked All Redditors progress from an ADIF logbook
 by VK3DAN with thanks to molo1134
 
