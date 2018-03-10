@@ -78,15 +78,15 @@ while (my $line = <$adif>)	# process ADIF data in array
     }
 }
 
-close(adif);
+close($adif);
 print "\nTotal of $count contacts with known redditor amateurs\n\n";
 
 sub csvstuff
 {
    if (-e $nickfile) 
    {
-       open (NICKFILE, "<", $nickfile);
-       while (<NICKFILE>)
+       open (my $nicks, "<", $nickfile);
+       while (<$nicks>)
        {
            chomp;
            my ($csvcall, undef, $userid) = split /,/;
@@ -96,6 +96,6 @@ sub csvstuff
                printf("%-5s%-14s%-25s%-8s%-8s%-10s\n",$count,$call,$userid,$band,$mode,$date);
            }
        }
-       close(NICKFILE);
+       close($nicks);
     }
 }
