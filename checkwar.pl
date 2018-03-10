@@ -1,9 +1,10 @@
-#! /usr/bin/perl -w
+#! /usr/bin/perl
 # Worked all redditors progress check utility by VK3DAN
 # Thanks to molo1134 for borrowed code snippets.
 #
 
 use strict;
+use warnings;
 
 my $count = 0;
 my $call = "";
@@ -22,7 +23,7 @@ if ($#ARGV == -1)
 
 my $adifFileName = "$ARGV[0]";
 
-open(ADIF, $adifFileName) or die "$! -- File $ARGV[0] doesn't exist or unreadable\n\n"; #open file or show error and die
+open(my $adif, $adifFileName) or die "$! -- File $ARGV[0] doesn't exist or unreadable\n\n"; #open file or show error and die
 print "$adifFileName found -- ";
 
 if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks old prompt to download new copy
@@ -44,37 +45,37 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
 
 printf("\n%-5s%-14s%-25s%-8s%-8s%-10s\n\n","#","Callsign","Reddit username","Band","Mode","Date"); 
 
-my @lines = <ADIF>;	# read ADIF data into array
-close(ADIF);		# close ADIF file
+#my @lines = <ADIF>;	# read ADIF data into array
+#close(ADIF);		# close ADIF file
 
-foreach $line (@lines)	# process ADIF data in array
+while (my $line = <$adif>)	# process ADIF data in array
 {
-    if($line =~ /<[Cc][Aa][Ll][Ll]:.>([^<]*)/)
+    if($line =~ /<CALL:\d+>([^<]*)/i)
     {  
         $call=$1;
         $call=~s/\s+$//;
     }
-    if($line =~ /<[Mm][Oo][Dd][Ee]:.>([^<]*)/)
+    if($line =~ /<MODE:\d+>([^<]*)/i)
     {
         $mode=$1;
         $mode=~s/\s+$//;
     }
-    if($line =~ /<[Qq][Ss][Oo]_[Dd][Aa][Tt][Ee]:.:.>([^<]*)/)
+    if($line =~ /<QSO_DATE:\d+:\d+>([^<]*)/i)
     {
         $date=$1;
         $date=~s/\s+$//;
     }
-    if($line =~ /<[Qq][Ss][Oo]_[Dd][Aa][Tt][Ee]:.>([^<]*)/)
+    if($line =~ /<QSO_DATE:\d+>([^<]*)/i)
     {
         $date=$1;
         $date=~s/\s+$//;
     }
-    if($line =~ /<[Bb][Aa][Nn][Dd]:.>([^<]*)/)
+    if($line =~ /<BAND:\d+>([^<]*)/i)
     {
         $band = $1;
         $band =~s/\s+$//;
     }
-    if($line =~ /<[Ee][Oo][Rr]>/)
+    if($line =~ /<EOR>/i)
     { 
         csvstuff();
     }
