@@ -9,6 +9,8 @@ use warnings;
 
 my $count = 0;
 my $nickfile = "./nicks.csv";
+my $nicksurl = "https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv";
+
 
 print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
 
@@ -30,13 +32,13 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
         my $freshy = <STDIN>;
         if ($freshy == "y") 
         {
-            system("powershell -command \"start-bitstransfer -source https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv -destination .\\nicks.csv\"");
+            system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
         }
     }
     print "redditor list found\n";
 } else {
     print "redditor list not found: fetching\n"; # no nicks.csv file so download a copy
-    system("powershell -command \"start-bitstransfer -source https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv -destination .\\nicks.csv\"");
+    system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
 }
 
 printf("\n%-5s%-14s%-25s%-8s%-8s%-10s\n\n","#","Callsign","Reddit username","Band","Mode","Date"); 
