@@ -96,12 +96,3 @@ sub csvstuff
        }
        close($nicks);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> updates and adds windows version, standalone and exe
-=======
-}
->>>>>>> master
