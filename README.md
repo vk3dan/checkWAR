@@ -3,7 +3,13 @@ Perl utility to take an ADIF format logbook and spit out only the contacts with 
 Written by VK3DAN, with thanks to molo1134 for some code and maintaining the csv file etc,
 and thanks to arodland for code style tips and cleanup help.
 
-usage: ./checkwar.pl <adifile.adi>
+*/*nix version:
+
+```usage: ./checkwar.pl <adifile.adi>```
+
+*windows exe version:
+
+```usage: checkwar-win.exe <adifile.adi>```
 
 This utility uses the nicks.csv file from molo1134's qrmbot as the reference for known redditors.
 If nicks.csv is not present the utility will download it directly from molo1134's github.
