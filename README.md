@@ -7,9 +7,14 @@ linux/unix/whatever version:
 
 ```usage: ./checkwar.pl <adifile.adi>```
 
-windows exe version:
+Windows .exe version:
 
 ```usage: checkwar-win.exe <adifile.adi>```
+
+The Windows version is just the perl interpreter (strawberry perl) bundled with the script in one file,
+as most windows machines do not have perl installed. The Windows version uses a powershell command to
+download the nicks.csv file instead of wget, for the same reason. It can be run from a normal cmd
+window, it just calls powershell but doesn't need to run in it.
 
 This utility uses the nicks.csv file from molo1134's qrmbot as the reference for known redditors.
 If nicks.csv is not present the utility will download it directly from molo1134's github.
