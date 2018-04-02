@@ -27,15 +27,16 @@ $ ./checkwar.pl log.adi
 Utility for checking Worked All Redditors progress from an ADIF logbook
 by VK3DAN with thanks to molo1134 and arodland
 
-log.adi found -- redditor list found
+/mnt/d/AmateurRadio/DXKeeper/log.adi found -- redditor list found
 
 #    Callsign      Reddit username          Band    Mode    Date
 
-1    ZL3CC         /u/zl3cc                 6M      FT8     20171208
-2    K1NZ          /u/nickenzi              30M     JT65    20171211
-3    K1NZ          /u/nickenzi              30M     FT8     20171127
+1    K1NZ          /u/nickenzi              30M     FT8     20171127
+2    ZL3CC         /u/zl3cc                 6M      FT8     20171208
+3    K1NZ          /u/nickenzi              30M     JT65    20171211
+4    VK2DDS        /u/VK2DDS                40M     FT8     20180311
 
-Total of 3 QSOs with known redditor amateurs
+Total of 4 QSOs with known redditor amateurs
 ```
 
 Further update will be made as needed within my capabilities.
