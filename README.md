@@ -36,4 +36,4 @@ Totals:
 
 ```
 
-Further update will be made as needed within my capabilities.
+Further update will be made as needed within my capabilities. If you can implement anything needed or desired, feel free to submit a PR.
