@@ -18,7 +18,7 @@ $ ./checkwar.pl log.adi
 Utility for checking Worked All Redditors progress from an ADIF logbook
 by VK3DAN with thanks to molo1134 and arodland
 
-d:\AmateurRadio\DXKeeper\log.adi found -- redditor list not found: fetching
+/mnt/d/AmateurRadio/DXKeeper/log.adi found -- redditor list found
 
 #    Callsign  Reddit username          #redditnet nick   Band    Mode    Date      eQSL LotW Card
 
@@ -33,6 +33,7 @@ Totals:
   6 QSOs with known redditor amateurs
   5 QSOs confirmed by either eQSL, LotW or Paper Card
 * 4 Unique redditor calls worked AND confirmed
+
 ```
 
 Further update will be made as needed within my capabilities.
