@@ -3,7 +3,7 @@
 # Thanks to molo1134 for borrowed code snippets
 # and arodland N2EON for code style and cleanup help
 #
-# version 0.3
+# version 0.4
 
 use strict;
 use warnings;
@@ -13,6 +13,7 @@ my $qslcount = 0;
 my $uniquecalls = 0;
 my $nickfile = "./nicks.csv";
 my $nicksurl = "https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv";
+my $exceptsurl = "https://raw.githubusercontent.com/vk3dan/checkWAR/master/exceptions.csv";
 my $overridesfile = "./overrides.csv";
 my $uniques = "";
 our $displaycall = "";
@@ -34,18 +35,35 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
 {
     if (-M "$nickfile" >= 28) 
     {
-        print "Nick file may be outdated - would you like to fetch a fresh copy? (y/n)\n";
+        print "\nredditor list may be outdated - would you like to fetch a fresh copy? (y/n)\n";
         my $freshy = <STDIN>;
         if ($freshy == "y") 
         {
             system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
         }
     }
-    print "redditor list found\n";
+    print "redditor list found -- ";
 } else {
     print "redditor list not found: fetching\n"; # no nicks.csv file so download a copy
-    system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
+            system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
 }
+if (-e $overridesfile ) # check for exception file existance and if it is more than 4 weeks old prompt to download new copy
+{
+    if (-M "$overridesfile" >= 28)
+    {
+        print "\nException file may be outdated - would you like to fetch a fresh copy? (y/n)\n";
+        my $freshy = <STDIN>;
+        if ($freshy == "y")
+        {
+            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\exceptions.csv\"");
+        }
+    }
+    print "exception list found\n";
+} else {
+    print "exception list not found: fetching\n"; # no exceptions.csv file so download a copy
+            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\exceptions.csv\"");
+}
+
 printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
 
 my ($call, $mode, $date, $band, $eqsl, $lotw, $card);
