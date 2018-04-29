@@ -3,17 +3,21 @@
 # Thanks to molo1134 for borrowed code snippets
 # and arodland N2EON for code style and cleanup help
 #
-# version 0.3w
+# version 0.3
 
 use strict;
 use warnings;
 
 my $count = 0;
 my $qslcount = 0;
-my $uniques = "";
 my $uniquecalls = 0;
 my $nickfile = "./nicks.csv";
 my $nicksurl = "https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv";
+my $overridesfile = "./overrides.csv";
+my $uniques = "";
+our $displaycall = "";
+our $irc = "";
+our $userid = "";
 
 print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
 
@@ -23,7 +27,6 @@ unless (@ARGV)
 }
 
 my $adifFileName = shift @ARGV;
-
 open(my $adif, $adifFileName) or die "$! -- File $adifFileName doesn't exist or unreadable\n\n"; #open file or show error and die
 print "$adifFileName found -- ";
 
@@ -43,7 +46,6 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
     print "redditor list not found: fetching\n"; # no nicks.csv file so download a copy
     system("powershell -command \"start-bitstransfer -source $nicksurl -destination .\\nicks.csv\"");
 }
-
 printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
 
 my ($call, $mode, $date, $band, $eqsl, $lotw, $card);
@@ -112,12 +114,39 @@ while (my $line = <$adif>)	# process ADIF data in array
     }
     if($line =~ /<EOR>/i) # End of record, now go check against redditor list.
     { 
-        csvstuff();
+        overridecheck();
     }
 }
 
 close($adif);
 print "\nTotals:\n  $count QSOs with known redditor amateurs\n  $qslcount QSOs confirmed by either eQSL, LotW or Paper Card\n* $uniquecalls Unique redditor calls worked AND confirmed\n\n";
+
+sub overridecheck
+{
+    $/ = "\n";
+    if (-e $overridesfile)
+    {
+        open (my $overrides, "<", $overridesfile); #read overrides for calls that can't work in main nicks file
+        while (<$overrides>)
+        {
+            chomp;
+            my ($override1, $override2, $overridedatestart, $overridedateend) = split /,/;
+            if ($overridedatestart eq "" and $overridedateend eq "")
+            {
+                $overridedatestart = $date;
+                $overridedateend = $date;
+            }
+            if ( lc $call eq lc $override1 and $date >= $overridedatestart and $date <= $overridedateend )
+            {
+                $displaycall = $call;
+                $call = $override2;
+                csvstuff();
+            } else {
+                csvstuff();
+            }
+        }
+    }
+}
 
 sub csvstuff
 {
@@ -127,31 +156,51 @@ sub csvstuff
        open (my $nicks, "<", $nickfile); # read nicks.csv into memory
        while (<$nicks>)
        {
-           chomp;
-           my ($csvcall, $irc, $userid) = split /,/; # each line has callsign, irc username and reddit u/name
+           our ($csvcall, $irc, $userid) = split /,/; # each line has callsign, irc username and reddit u/name
+           $userid =~ s/\R//g;
            if (lc $call eq lc $csvcall)
            {
-               $count++;
-               if ( $eqsl eq "Y" or $lotw eq "Y" or $card eq "Y") # perform actions only on confirmed contacts
+               if ($displaycall eq "")
                {
-                   $qslcount++;
-                   if ( index(lc $uniques, lc " $call ") == -1) # perform actions only on unique confirmed contacts
-                   {
-                       $uniques = lc "${uniques} ${call}";
-                       $uniquecalls++;
-                       $call = "$call *";
-                   }
-               if ( $eqsl eq "Y" ) { $eqsl = "Yes" }; # Change for display
-               if ( $lotw eq "Y" ) { $lotw = "Yes" };
-               if ( $card eq "Y" ) { $card = "Yes" };
+                   $displaycall = $call;
                }
-               printf("%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n",$count,$call,$userid,$irc,$band,$mode,$date,$eqsl,$lotw,$card); # display formatted result for current redditor QSO
-               $eqsl = "";
-               $lotw = "";
-               $card = "";
-           }
+               displaystuff();
+           } 
+       }
+       if ($displaycall ne "")
+       {
+           $userid = "";
+           $irc = "";
+           displaystuff();
        }
        $/ = "<EOR>";
+    
        close($nicks);
     }
+}
+
+sub displaystuff
+{
+    $count++;
+    if ( $eqsl eq "Y" or $lotw eq "Y" or $card eq "Y") # perform actions only on confirmed contacts
+    {
+        $qslcount++;
+        if ( index(lc $uniques, lc " $displaycall ") == -1) # perform actions only on unique confirmed contacts
+        {
+            $uniques = lc "${uniques} ${displaycall}";
+            $uniquecalls++;
+            $displaycall = "$displaycall *";
+        }
+    }
+    if ( $eqsl eq "Y" ) { $eqsl = "Yes" }; # Change for display
+    if ( $lotw eq "Y" ) { $lotw = "Yes" };
+    if ( $card eq "Y" ) { $card = "Yes" };
+    printf("%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n",$count,$displaycall,$userid,$irc,$band,$mode,$date,$eqsl,$lotw,$card);
+    $eqsl = "";
+    $lotw = "";
+    $card = "";
+    $call = "";
+    $displaycall = "";
+    $userid = "";
+    $irc = "";
 }
