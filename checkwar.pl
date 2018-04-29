@@ -172,7 +172,7 @@ sub csvstuff
    {
        $/ = "\n";
        open (my $nicks, "<", $nickfile); # read nicks.csv into memory
-       while (<$nicks>)
+       nickloop: { while (<$nicks>)
        {
            our ($csvcall, $irc, $userid) = split /,/; # each line has callsign, irc username and reddit u/name
            $userid =~ s/\R//g;
@@ -183,8 +183,9 @@ sub csvstuff
                    $displaycall = $call;
                }
                displaystuff();
+               last nickloop;
            } 
-       }
+       }}
        if ($displaycall ne "")
        {
            $userid = "";
