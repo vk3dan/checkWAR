@@ -13,7 +13,7 @@ my $qslcount = 0;
 my $uniquecalls = 0;
 my $nickfile = "./nicks.csv";
 my $nicksurl = "https://raw.githubusercontent.com/molo1134/qrmbot/master/lib/nicks.csv";
-my $exceptsurl = "https://raw.githubusercontent.com/vk3dan/checkWAR/master/exceptions.csv";
+my $exceptsurl = "https://raw.githubusercontent.com/vk3dan/checkWAR/master/overrides.csv";
 my $overridesfile = "./overrides.csv";
 my $uniques = "";
 our $displaycall = "";
@@ -55,13 +55,13 @@ if (-e $overridesfile ) # check for exception file existance and if it is more t
         my $freshy = <STDIN>;
         if ($freshy == "y")
         {
-            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\exceptions.csv\"");
+            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\overrides.csv\"");
         }
     }
     print "exception list found\n";
 } else {
     print "exception list not found: fetching\n"; # no exceptions.csv file so download a copy
-            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\exceptions.csv\"");
+            system("powershell -command \"start-bitstransfer -source $exceptsurl -destination .\\overrides.csv\"");
 }
 
 printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
