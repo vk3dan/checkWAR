@@ -138,7 +138,6 @@ sub csvstuff
 {
    if (-e $nickfile) 
    {
-       $/ = "\n";
        open (my $nicks, "<", $nickfile); # read nicks.csv into memory
        nickloop: { while (<$nicks>)
        {
@@ -160,7 +159,6 @@ sub csvstuff
            $irc = "";
            displaystuff();
        }
-       $/ = "<EOR>";
     
        close($nicks);
     }
