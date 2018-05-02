@@ -20,6 +20,19 @@ our $displaycall = "";
 our $irc = "";
 our $userid = "";
 
+use constant {
+  ST_BOF => 0,
+  ST_HEADER => 1,
+  ST_HTAG => 2,
+  ST_TAG => 3,
+  ST_TAGNAME => 4,
+  ST_LEN => 5,
+  ST_TYPE => 6,
+  ST_DATA => 7,
+};
+
+our $state = ST_BOF;
+
 print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
 
 unless (@ARGV)
@@ -68,72 +81,27 @@ printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Red
 
 my ($call, $mode, $date, $band, $eqsl, $lotw, $card);
 
-$/ = "<EOR>";
-
-while (my $line = <$adif>)	# process ADIF data in array
-{
-    if($line =~ /<CALL:\d+>([^<]*)/i) # Get callsign
-    {  
-        $call=$1;
-        $call=~s/\s+$//;
-    }
-    if($line =~ /<MODE:\d+>([^<]*)/i) # Get mode
+while (my $record = read_adif($adif)) {
+    $call = $record->{call};
+    $mode = $record->{mode};
+    $card = $record->{qsl_rcvd};
+    if (!defined $card or $card eq "R" or $card eq "N" )
     {
-        $mode=$1;
-        $mode=~s/\s+$//;
+      $card = "";
     }
-    if($line =~ /<QSL_Rcvd:\d+>([^<]*)/i) # Paper QSL card received?
+    $date = $record->{qso_date};
+    $band = $record->{band};
+    $eqsl = $record->{eqsl_qsl_rcvd};
+    if (!defined $eqsl or $eqsl eq "R" or $eqsl eq "N" )
     {
-        $card = $1;
-        $card =~s/\s+$//;
-        if ( $card eq "R" or $card eq "N" )
-        {
-            $card = "";
-        }
-    } else {
-        $card = "";
+      $eqsl = "";
     }
-    if($line =~ /<QSO_DATE:\d+:\d+>([^<]*)/i) # Get date (Format 1)
-    {
-        $date=$1;
-        $date=~s/\s+$//;
-    }
-    if($line =~ /<QSO_DATE:\d+>([^<]*)/i) # Get date (Format 2)
-    {
-        $date=$1;
-        $date=~s/\s+$//;
-    }
-    if($line =~ /<BAND:\d+>([^<]*)/i) # Get band
-    {
-        $band = $1;
-        $band =~s/\s+$//;
-    }
-    if($line =~ /<EQSL_QSL_RCVD:\d+>([^<]*)/i) # EQSL confirmation received?
-    {
-        $eqsl = $1;
-        $eqsl =~s/\s+$//;
-         if ( $eqsl eq "R" or $eqsl eq "N" )
-        {
-            $eqsl = "";
-        }
-    } else {
-        $eqsl = "";
-    }
-    if($line =~ /<LOTW_QSL_RCVD:\d+>([^<]*)/i) # LotW confirmation received?
-    {
-        $lotw = $1;
-        $lotw =~s/\s+$//;
-        if ( $lotw eq "R" or $lotw eq "N" )
-        { 
-            $lotw = "";
-        }
-    } else {
-        $lotw = "";
-    }
-    if($line =~ /<EOR>/i) # End of record, now go check against redditor list.
+    $lotw = $record->{lotw_qsl_rcvd};
+    if (!defined $lotw or $lotw eq "R" or $lotw eq "N" )
     { 
-        overridecheck();
+      $lotw = "";
     }
+    overridecheck();
 }
 
 close($adif);
@@ -170,7 +138,6 @@ sub csvstuff
 {
    if (-e $nickfile) 
    {
-       $/ = "\n";
        open (my $nicks, "<", $nickfile); # read nicks.csv into memory
        nickloop: { while (<$nicks>)
        {
@@ -192,7 +159,6 @@ sub csvstuff
            $irc = "";
            displaystuff();
        }
-       $/ = "<EOR>";
     
        close($nicks);
     }
@@ -222,4 +188,88 @@ sub displaystuff
     $displaycall = "";
     $userid = "";
     $irc = "";
+}
+
+sub read_adif {
+  my ($fh) = @_;
+
+  my ($char, $tag, $val, $len) = ("", "", "", "");
+  my $ret = {};
+
+  while (read $fh, $char, 1) {
+    if ($state == ST_BOF) {
+      if ($char eq '<') {
+        $state = ST_TAGNAME; # No header on this file
+      } else {
+        $state = ST_HEADER;
+      }
+    } elsif ($state == ST_HEADER) {
+      if ($char eq '<') {
+        $state = ST_HTAG; # Possible beginning of <eor>
+      }
+    } elsif ($state == ST_HTAG) {
+      if ($char eq '>' && $tag eq 'eoh') {
+        $tag = "";
+        $state = ST_TAG; # Header is over.
+      } elsif ($char eq '<' || length($tag) > 3) {
+        $tag = "";
+        $state = ST_HTAG; # Try again
+      } else {
+        $tag .= lc $char;
+      }
+    } elsif ($state == ST_TAG) {
+      if ($char eq '<') {
+        $state = ST_TAGNAME;
+      }
+    } elsif ($state == ST_TAGNAME) {
+      if ($char eq '>') {
+        if ($tag eq 'eor') {
+          $tag = "";
+          $state = ST_TAG;
+          return $ret;
+        } else {
+          die "Unknown tag <$tag>";
+        }
+      } elsif ($char eq ':') {
+        $state = ST_LEN;
+      } else {
+        $tag .= lc $char;
+      }
+    } elsif ($state == ST_LEN) {
+      if ($char eq '>') {
+        if ($len > 0) {
+          $state = ST_DATA;
+        } else {
+          $ret->{$tag} = "";
+          $tag = $val = $len = "";
+          $state = ST_TAG;
+        }
+      } elsif ($char eq ':') {
+        $state = ST_TYPE;
+      } else {
+        $len .= $char;
+      }
+    } elsif ($state == ST_TYPE) {
+      if ($char eq '>') {
+        if ($len > 0) {
+          $state = ST_DATA;
+        } else {
+          $ret->{$tag} = "";
+          $tag = $val = $len = "";
+          $state = ST_TAG;
+        }
+      }
+      # we ignore the type.
+    } elsif ($state == ST_DATA) {
+      $val .= $char;
+      $len--;
+      if (!$len) {
+        $val =~ s/\s+$//;
+        $ret->{$tag} = $val;
+        $tag = $val = $len = "";
+        $state = ST_TAG;
+      }
+    }
+  }
+  return;
 }
