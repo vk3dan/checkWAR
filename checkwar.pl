@@ -1,9 +1,11 @@
 #! /usr/bin/perl
 # Worked all redditors progress check utility by VK3DAN
 # Thanks to molo1134 for borrowed code snippets
-# and arodland N2EON for code style and cleanup help
+# and arodland N2EON for new ADIF parser code which is
+# more able to cope with different software's ADIF files,
+# code style and cleanup help
 #
-# version 0.4
+# version 0.5
 
 use strict;
 use warnings;
@@ -48,11 +50,11 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
 {
     if (-M "$nickfile" >= 28) 
     {
-        print "\nredditor list may be outdated - would you like to fetch a fresh copy? (y/n)\n";
+        print "\nredditor list may be outdated - would you like to fetch a fresh copy? (y/n)";
         my $freshy = <STDIN>;
-        if ($freshy == "y") 
+        if (lc $freshy eq "y\n") 
         {
-            system("wget --no-verbose $nicksurl");
+            system("wget --no-verbose $nicksurl -O $nickfile");
         }
     }
     print "redditor list found -- ";
@@ -64,11 +66,11 @@ if (-e $overridesfile ) # check for exception file existance and if it is more t
 {
     if (-M "$overridesfile" >= 28)
     {
-        print "\nException file may be outdated - would you like to fetch a fresh copy? (y/n)\n";
-        my $freshy = <STDIN>;
-        if ($freshy == "y")
+        print "\nException file may be outdated - would you like to fetch a fresh copy? (y/n)";
+        my $newexc = <STDIN>;
+        if (lc $newexc eq "y\n")
         {
-            system("wget --no-verbose $exceptsurl");
+            system("wget --no-verbose $exceptsurl -O $overridesfile");
         }
     }
     print "exception list found\n";
@@ -172,7 +174,7 @@ sub displaystuff
         $qslcount++;
         if ( index(lc $uniques, lc " $displaycall ") == -1) # perform actions only on unique confirmed contacts
         {
-            $uniques = lc "${uniques} ${displaycall}";
+                    $uniques = lc "${uniques} ${displaycall}";
             $uniquecalls++;
             $displaycall = "$displaycall *";
         }
