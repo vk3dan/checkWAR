@@ -6,8 +6,11 @@ and thanks to arodland for the much nicer ADIF parser, code style tips and clean
 usage: ./checkwar.pl <adifile.adi>
 
 This utility uses the nicks.csv file from molo1134's qrmbot as the reference for known redditors.
+
 If nicks.csv is not present the utility will download it directly from molo1134's github.
+
 If overrides.csv is not present the utility will download it directly from my github.
+
 If nicks.csv or overrides.csv is more than 28 days old the utility will ask if you wish to download a new version.
 
 This latest version allows you to see which contacts are confirmed and also how many unique callsigns had been both worked and confirmed as this appears to be the metric which will be used for this award when the details are sorted out.
