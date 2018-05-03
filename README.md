@@ -19,7 +19,7 @@ $ ./checkwar.pl log.adi
 Utility for checking Worked All Redditors progress from an ADIF logbook
 by VK3DAN with thanks to molo1134 and arodland
 
-/mnt/d/AmateurRadio/DXKeeper/log.adi found -- redditor list found -- exception list found
+log.adi found -- redditor list found -- exception list found
 
 #    Callsign  Reddit username          #redditnet nick   Band    Mode    Date      eQSL LotW Card
 
