@@ -62,6 +62,8 @@ if (-e $nickfile ) # check for nickfile existance and if it is more than 4 weeks
     print "redditor list not found: fetching\n"; # no nicks.csv file so download a copy
     system("wget --no-verbose $nicksurl");
 }
+open (my $nicks, "<", $nickfile); #read overrides for calls that can't work in main nicks file 
+my @nickarray = <$nicks>;
 if (-e $overridesfile ) # check for exception file existance and if it is more than 4 weeks old prompt to download new copy
 {
     if (-M "$overridesfile" >= 28)
@@ -78,6 +80,8 @@ if (-e $overridesfile ) # check for exception file existance and if it is more t
     print "exception list not found: fetching\n"; # no exceptions.csv file so download a copy
     system("wget --no-verbose $exceptsurl");
 }
+open (my $overrides, "<", $overridesfile); #read overrides for calls that can't work in main nicks file
+my @overridearray = <$overrides>;
 
 printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
 
@@ -114,10 +118,8 @@ sub overridecheck
     $/ = "\n";
     if (-e $overridesfile)
     {
-        open (my $overrides, "<", $overridesfile); #read overrides for calls that can't work in main nicks file
-        while (<$overrides>)
+        foreach (@overridearray)
         {
-            chomp;
             my ($override1, $override2, $overridedatestart, $overridedateend) = split /,/;
             if ($overridedatestart eq "" and $overridedateend eq "")
             {
@@ -138,10 +140,9 @@ sub overridecheck
 
 sub csvstuff
 {
-   if (-e $nickfile) 
+   if (-e $nickfile)
    {
-       open (my $nicks, "<", $nickfile); # read nicks.csv into memory
-       nickloop: { while (<$nicks>)
+       nickloop: { foreach (@nickarray)
        {
            our ($csvcall, $irc, $userid) = split /,/; # each line has callsign, irc username and reddit u/name
            $userid =~ s/\R//g;
@@ -161,8 +162,6 @@ sub csvstuff
            $irc = "";
            displaystuff();
        }
-    
-       close($nicks);
     }
 }
 
