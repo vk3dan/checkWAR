@@ -142,7 +142,7 @@ sub csvstuff
 {
    if (-e $nickfile)
    {
-       nickloop: { foreach (@nickarray)
+       nickstuff: { foreach (@nickarray)
        {
            our ($csvcall, $irc, $userid) = split /,/; # each line has callsign, irc username and reddit u/name
            $userid =~ s/\R//g;
@@ -153,15 +153,15 @@ sub csvstuff
                    $displaycall = $call;
                }
                displaystuff();
-               last nickloop;
+               last nickstuff;
            } 
-       }}
+       }
        if ($displaycall ne "")
        {
            $userid = "";
            $irc = "";
            displaystuff();
-       }
+       }}
     }
 }
 
