@@ -35,11 +35,11 @@ use constant {
 
 our $state = ST_BOF;
 
-print "\nUtility for checking \e[91mWorked All Redditors\e[0m progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
+print "\nUtility for checking Worked All Redditors progress from an ADIF logbook\nby VK3DAN with thanks to molo1134 and arodland\n\n";
 
 unless (@ARGV)
 {
-    die "No ADIF file specified or incorrect usage\nusage: \e[97mcheckwar <adifile.adi>\e[0m\n\n";  #show usage if called without args
+    die "No ADIF file specified or incorrect usage\nusage: checkwar <adifile.adi>\n\n";  #show usage if called without args
 }
 
 my $adifFileName = shift @ARGV;
@@ -83,7 +83,7 @@ if (-e $overridesfile ) # check for exception file existance and if it is more t
 open (my $overrides, "<", $overridesfile); #read overrides for calls that can't work in main nicks file
 my @overridearray = <$overrides>;
 
-printf ("\n\e[97m%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\e[0m\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
+printf ("\n%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n\n","#","Callsign","Reddit username","#redditnet nick","Band","Mode","Date","eQSL","LotW","Card"); 
 
 my ($call, $mode, $date, $band, $eqsl, $lotw, $card);
 
@@ -181,7 +181,7 @@ sub displaystuff
     if ( $eqsl eq "Y" ) { $eqsl = "Yes" }; # Change for display
     if ( $lotw eq "Y" ) { $lotw = "Yes" };
     if ( $card eq "Y" ) { $card = "Yes" };
-    printf("%-5s%-10s%-25s%-18s%-8s%-8s%-10s\e[92m%-5s%-5s%-5s\e[0m\n",$count,$displaycall,$userid,$irc,$band,$mode,$date,$eqsl,$lotw,$card);
+    printf("%-5s%-10s%-25s%-18s%-8s%-8s%-10s%-5s%-5s%-5s\n",$count,$displaycall,$userid,$irc,$band,$mode,$date,$eqsl,$lotw,$card);
     $eqsl = "";
     $lotw = "";
     $card = "";
